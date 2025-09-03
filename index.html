@@ -4,183 +4,39 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lista de Tarefas</title>
+
+  <!-- Manifest PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#4cc9f0">
+
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    body {
-      background: #0d1b2a;
-      color: #e0e6ed;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
-      padding: 20px;
-    }
-
-    .container {
-      background: #1b263b;
-      width: 100%;
-      max-width: 600px;
-      padding: 25px;
-      border-radius: 15px;
-      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
-    }
-
-    h1 {
-      text-align: center;
-      margin-bottom: 20px;
-      color: #4cc9f0;
-    }
-
-    .task-form {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .task-form input, .task-form button, .task-form select {
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid #415a77;
-      font-size: 15px;
-      outline: none;
-      background: #0d1b2a;
-      color: #e0e6ed;
-    }
-
-    .task-form button {
-      background: #4cc9f0;
-      color: #0d1b2a;
-      font-weight: bold;
-      border: none;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    .task-form button:hover {
-      background: #3a9ec1;
-    }
-
-    .filters {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    ul {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    li {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #243b55;
-      padding: 12px 15px;
-      border-radius: 10px;
-      transition: 0.3s;
-    }
-
-    li.completed {
-      text-decoration: line-through;
-      color: #7b9ab8;
-      opacity: 0.7;
-    }
-
-    .task-info {
-      flex: 1;
-      margin-right: 10px;
-    }
-
-    .task-actions {
-      display: flex;
-      gap: 8px;
-    }
-
-    button.action-btn {
-      border: none;
-      cursor: pointer;
-      padding: 6px 10px;
-      border-radius: 6px;
-      font-size: 13px;
-      transition: 0.3s;
-      font-weight: bold;
-    }
-
-    .edit-btn {
-      background: #4cc9f0;
-      color: #0d1b2a;
-    }
-
-    .delete-btn {
-      background: #ef476f;
-      color: #fff;
-    }
-
-    /* MODAL */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.7);
-      justify-content: center;
-      align-items: center;
-    }
-
-    .modal-content {
-      background: #1b263b;
-      padding: 20px;
-      border-radius: 12px;
-      max-width: 400px;
-      width: 90%;
-      text-align: center;
-      color: #e0e6ed;
-    }
-
-    .modal-content h2 {
-      margin-bottom: 15px;
-      color: #4cc9f0;
-    }
-
-    .modal-content input {
-      width: 100%;
-      margin-bottom: 15px;
-    }
-
-    .modal-buttons {
-      display: flex;
-      justify-content: space-around;
-      margin-top: 10px;
-    }
-
-    .modal-buttons button {
-      padding: 8px 15px;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .confirm-btn {
-      background: #4cc9f0;
-      color: #0d1b2a;
-    }
-
-    .cancel-btn {
-      background: #ef476f;
-      color: #fff;
-    }
+    /* --- Seu CSS existente --- */
+    * {margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;}
+    body {background:#0d1b2a;color:#e0e6ed;display:flex;justify-content:center;align-items:flex-start;min-height:100vh;padding:20px;}
+    .container {background:#1b263b;width:100%;max-width:600px;padding:25px;border-radius:15px;box-shadow:0 6px 15px rgba(0,0,0,0.5);}
+    h1 {text-align:center;margin-bottom:20px;color:#4cc9f0;}
+    .task-form {display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
+    .task-form input, .task-form button, .task-form select {padding:12px;border-radius:8px;border:1px solid #415a77;font-size:15px;outline:none;background:#0d1b2a;color:#e0e6ed;}
+    .task-form button {background:#4cc9f0;color:#0d1b2a;font-weight:bold;border:none;cursor:pointer;transition:0.3s;}
+    .task-form button:hover {background:#3a9ec1;}
+    .filters {display:flex;justify-content:space-between;gap:10px;margin-bottom:20px;}
+    ul {list-style:none;display:flex;flex-direction:column;gap:12px;}
+    li {display:flex;justify-content:space-between;align-items:center;background:#243b55;padding:12px 15px;border-radius:10px;transition:0.3s;}
+    li.completed {text-decoration:line-through;color:#7b9ab8;opacity:0.7;}
+    .task-info {flex:1;margin-right:10px;}
+    .task-actions {display:flex;gap:8px;}
+    button.action-btn {border:none;cursor:pointer;padding:6px 10px;border-radius:6px;font-size:13px;transition:0.3s;font-weight:bold;}
+    .edit-btn {background:#4cc9f0;color:#0d1b2a;}
+    .delete-btn {background:#ef476f;color:#fff;}
+    /* Modal */
+    .modal {display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);justify-content:center;align-items:center;}
+    .modal-content {background:#1b263b;padding:20px;border-radius:12px;max-width:400px;width:90%;text-align:center;color:#e0e6ed;}
+    .modal-content h2 {margin-bottom:15px;color:#4cc9f0;}
+    .modal-content input {width:100%;margin-bottom:15px;padding:10px;border-radius:6px;border:1px solid #415a77;background:#0d1b2a;color:#e0e6ed;}
+    .modal-buttons {display:flex;justify-content:space-around;margin-top:10px;}
+    .modal-buttons button {padding:8px 15px;border-radius:8px;border:none;cursor:pointer;font-weight:bold;}
+    .confirm-btn {background:#4cc9f0;color:#0d1b2a;}
+    .cancel-btn {background:#ef476f;color:#fff;}
   </style>
 </head>
 <body>
@@ -208,7 +64,7 @@
     <ul id="taskList"></ul>
   </div>
 
-  <!-- Modal de Edição -->
+  <!-- Modal Edição -->
   <div class="modal" id="editModal">
     <div class="modal-content">
       <h2>Editar Tarefa</h2>
@@ -220,7 +76,7 @@
     </div>
   </div>
 
-  <!-- Modal de Exclusão -->
+  <!-- Modal Exclusão -->
   <div class="modal" id="deleteModal">
     <div class="modal-content">
       <h2>Excluir Tarefa</h2>
@@ -233,40 +89,32 @@
   </div>
 
   <script>
+    // --- Variáveis ---
     const taskForm = document.getElementById("taskForm");
     const taskInput = document.getElementById("taskInput");
     const taskDate = document.getElementById("taskDate");
     const taskList = document.getElementById("taskList");
     const filterStatus = document.getElementById("filterStatus");
     const sortTasks = document.getElementById("sortTasks");
-
     let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
     let editingTaskId = null;
     let deletingTaskId = null;
 
-    function saveTasks() {
-      localStorage.setItem("tasks", JSON.stringify(tasks));
-    }
+    function saveTasks() { localStorage.setItem("tasks", JSON.stringify(tasks)); }
 
     function renderTasks() {
       taskList.innerHTML = "";
       let filteredTasks = [...tasks];
 
-      if (filterStatus.value === "completed") {
-        filteredTasks = filteredTasks.filter(t => t.completed);
-      } else if (filterStatus.value === "pending") {
-        filteredTasks = filteredTasks.filter(t => !t.completed);
-      }
+      if (filterStatus.value === "completed") filteredTasks = filteredTasks.filter(t => t.completed);
+      else if (filterStatus.value === "pending") filteredTasks = filteredTasks.filter(t => !t.completed);
 
-      if (sortTasks.value === "name") {
-        filteredTasks.sort((a, b) => a.text.localeCompare(b.text));
-      } else {
-        filteredTasks.sort((a, b) => new Date(a.date || Infinity) - new Date(b.date || Infinity));
-      }
+      if (sortTasks.value === "name") filteredTasks.sort((a,b) => a.text.localeCompare(b.text));
+      else filteredTasks.sort((a,b) => new Date(a.date || Infinity) - new Date(b.date || Infinity));
 
       filteredTasks.forEach(task => {
         const li = document.createElement("li");
-        if (task.completed) li.classList.add("completed");
+        if(task.completed) li.classList.add("completed");
 
         const taskInfo = document.createElement("div");
         taskInfo.className = "task-info";
@@ -304,51 +152,43 @@
       e.preventDefault();
       const text = taskInput.value.trim();
       const date = taskDate.value;
-      if (!text) return;
-
-      tasks.push({ id: Date.now(), text, date, completed: false });
-      saveTasks();
-      renderTasks();
-      taskForm.reset();
+      if(!text) return;
+      tasks.push({id:Date.now(),text,date,completed:false});
+      saveTasks(); renderTasks(); taskForm.reset();
     });
 
     function toggleTask(id) {
-      tasks = tasks.map(t => t.id === id ? {...t, completed: !t.completed} : t);
-      saveTasks();
-      renderTasks();
+      tasks = tasks.map(t => t.id===id ? {...t,completed:!t.completed} : t);
+      saveTasks(); renderTasks();
     }
 
-    // --- MODAL FUNÇÕES ---
-    function openEditModal(id) {
+    // --- Modais ---
+    function openEditModal(id){
       editingTaskId = id;
-      const task = tasks.find(t => t.id === id);
+      const task = tasks.find(t=>t.id===id);
       document.getElementById("editInput").value = task.text;
       document.getElementById("editModal").style.display = "flex";
     }
 
-    function openDeleteModal(id) {
+    function openDeleteModal(id){
       deletingTaskId = id;
       document.getElementById("deleteModal").style.display = "flex";
     }
 
-    function closeModal(id) {
-      document.getElementById(id).style.display = "none";
-    }
+    function closeModal(id){ document.getElementById(id).style.display="none"; }
 
-    document.getElementById("saveEdit").onclick = () => {
+    document.getElementById("saveEdit").onclick = ()=>{
       const newText = document.getElementById("editInput").value.trim();
-      if (newText) {
-        tasks = tasks.map(t => t.id === editingTaskId ? {...t, text: newText} : t);
-        saveTasks();
-        renderTasks();
+      if(newText){
+        tasks = tasks.map(t=>t.id===editingTaskId ? {...t,text:newText}:t);
+        saveTasks(); renderTasks();
       }
       closeModal("editModal");
     };
 
-    document.getElementById("confirmDelete").onclick = () => {
-      tasks = tasks.filter(t => t.id !== deletingTaskId);
-      saveTasks();
-      renderTasks();
+    document.getElementById("confirmDelete").onclick = ()=>{
+      tasks = tasks.filter(t=>t.id!==deletingTaskId);
+      saveTasks(); renderTasks();
       closeModal("deleteModal");
     };
 
@@ -356,6 +196,13 @@
     sortTasks.addEventListener("change", renderTasks);
 
     renderTasks();
+
+    // --- Service Worker ---
+    if("serviceWorker" in navigator){
+      navigator.serviceWorker.register("service-worker.js")
+        .then(()=>console.log("Service Worker registrado!"))
+        .catch(err=>console.log("Erro SW:",err));
+    }
   </script>
 </body>
 </html>
