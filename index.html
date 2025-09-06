@@ -1,208 +1,277 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lista de Tarefas</title>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Lista de Tarefas</title>
 
-  <!-- Manifest PWA -->
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#4cc9f0">
+ <meta name="theme-color" content="#4cc9f0">
 
-  <style>
-    /* --- Seu CSS existente --- */
-    * {margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;}
-    body {background:#0d1b2a;color:#e0e6ed;display:flex;justify-content:center;align-items:flex-start;min-height:100vh;padding:20px;}
-    .container {background:#1b263b;width:100%;max-width:600px;padding:25px;border-radius:15px;box-shadow:0 6px 15px rgba(0,0,0,0.5);}
-    h1 {text-align:center;margin-bottom:20px;color:#4cc9f0;}
-    .task-form {display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
-    .task-form input, .task-form button, .task-form select {padding:12px;border-radius:8px;border:1px solid #415a77;font-size:15px;outline:none;background:#0d1b2a;color:#e0e6ed;}
-    .task-form button {background:#4cc9f0;color:#0d1b2a;font-weight:bold;border:none;cursor:pointer;transition:0.3s;}
-    .task-form button:hover {background:#3a9ec1;}
-    .filters {display:flex;justify-content:space-between;gap:10px;margin-bottom:20px;}
-    ul {list-style:none;display:flex;flex-direction:column;gap:12px;}
-    li {display:flex;justify-content:space-between;align-items:center;background:#243b55;padding:12px 15px;border-radius:10px;transition:0.3s;}
-    li.completed {text-decoration:line-through;color:#7b9ab8;opacity:0.7;}
-    .task-info {flex:1;margin-right:10px;}
-    .task-actions {display:flex;gap:8px;}
-    button.action-btn {border:none;cursor:pointer;padding:6px 10px;border-radius:6px;font-size:13px;transition:0.3s;font-weight:bold;}
-    .edit-btn {background:#4cc9f0;color:#0d1b2a;}
-    .delete-btn {background:#ef476f;color:#fff;}
-    /* Modal */
-    .modal {display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);justify-content:center;align-items:center;}
-    .modal-content {background:#1b263b;padding:20px;border-radius:12px;max-width:400px;width:90%;text-align:center;color:#e0e6ed;}
-    .modal-content h2 {margin-bottom:15px;color:#4cc9f0;}
-    .modal-content input {width:100%;margin-bottom:15px;padding:10px;border-radius:6px;border:1px solid #415a77;background:#0d1b2a;color:#e0e6ed;}
-    .modal-buttons {display:flex;justify-content:space-around;margin-top:10px;}
-    .modal-buttons button {padding:8px 15px;border-radius:8px;border:none;cursor:pointer;font-weight:bold;}
-    .confirm-btn {background:#4cc9f0;color:#0d1b2a;}
-    .cancel-btn {background:#ef476f;color:#fff;}
-  </style>
+ <style>
+  * {
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
+   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  body {
+   background: #0d1b2a;
+   color: #e0e6ed;
+   display: flex;
+   justify-content: center;
+   align-items: flex-start;
+   min-height: 100vh;
+   padding: 20px;
+  }
+  .container {
+   background: #1b263b;
+   width: 100%;
+   max-width: 600px;
+   padding: 25px;
+   border-radius: 15px;
+   box-shadow: 0 6px 15px rgba(0,0,0,0.5);
+  }
+  h1 {
+   text-align: center;
+   margin-bottom: 20px;
+   color: #4cc9f0;
+  }
+  .task-form {
+   display: flex;
+   flex-direction: column;
+   gap: 10px;
+   margin-bottom: 20px;
+  }
+  .task-form input, .task-form button, .task-form select {
+   padding: 12px;
+   border-radius: 8px;
+   border: 1px solid #415a77;
+   font-size: 15px;
+   outline: none;
+   background: #0d1b2a;
+   color: #e0e6ed;
+  }
+  .task-form button {
+   background: #4cc9f0;
+   color: #0d1b2a;
+   font-weight: bold;
+   border: none;
+   cursor: pointer;
+   transition: 0.3s;
+  }
+  .task-form button:hover { background: #3a9ec1; }
+  .filters {
+   display: flex;
+   justify-content: space-between;
+   gap: 10px;
+   margin-bottom: 20px;
+  }
+  ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  li {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   background: #243b55;
+   padding: 12px 15px;
+   border-radius: 10px;
+   transition: 0.3s;
+  }
+  /* ALTERAÇÃO CSS: Agora muda o fundo para verde e mantém a cor do texto */
+  li.completed {
+   background: #2a9d8f; /* Fundo verde */
+      color: #e0e6ed;
+  }
+    /* Adicionado para manter o texto riscado apenas na informação da tarefa */
+    li.completed .task-info {
+        text-decoration: line-through;
+        opacity: 0.8;
+    }
+  .task-info {
+   flex: 1;
+   margin-right: 10px;
+  }
+  .task-actions {
+   display: flex;
+   gap: 8px;
+  }
+  button.action-btn {
+   border: none;
+   cursor: pointer;
+   padding: 6px 10px;
+   border-radius: 6px;
+   font-size: 13px;
+   transition: 0.3s;
+   font-weight: bold;
+  }
+    /* ALTERAÇÃO CSS: Novo estilo para o botão de concluir/desfazer */
+    .complete-btn { background: #2a9d8f; color: #fff; }
+    .undo-btn { background: #fca311; color: #0d1b2a; }
+  .edit-btn { background: #4cc9f0; color: #0d1b2a; }
+  .delete-btn { background: #ef476f; color: #fff; }
+
+  /* Modal (Sem alterações) */
+  .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; }
+  .modal-content { background: #1b263b; padding: 20px; border-radius: 12px; max-width: 400px; width: 90%; text-align: center; color: #e0e6ed; }
+  .modal-content h2 { margin-bottom: 15px; color: #4cc9f0; }
+  .modal-content input { width: 100%; margin-bottom: 15px; padding: 10px; border-radius: 6px; border: 1px solid #415a77; background: #0d1b2a; color: #e0e6ed; }
+  .modal-buttons { display: flex; justify-content: space-around; margin-top: 10px; }
+  .modal-buttons button { padding: 8px 15px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; }
+  .confirm-btn { background: #4cc9f0; color: #0d1b2a; }
+  .cancel-btn { background: #ef476f; color: #fff; }
+ </style>
 </head>
 <body>
-  <div class="container">
-    <h1>📝 Lista de Tarefas</h1>
-
-    <form class="task-form" id="taskForm">
-      <input type="text" id="taskInput" placeholder="Digite sua tarefa..." required>
-      <input type="date" id="taskDate">
-      <button type="submit">Adicionar</button>
-    </form>
-
-    <div class="filters">
-      <select id="filterStatus">
-        <option value="all">Todas</option>
-        <option value="completed">Concluídas</option>
-        <option value="pending">Pendentes</option>
-      </select>
-      <select id="sortTasks">
-        <option value="date">Ordenar por Data</option>
-        <option value="name">Ordenar por Nome</option>
-      </select>
-    </div>
-
-    <ul id="taskList"></ul>
+ <div class="container">
+  <h1>📝 Lista de Tarefas</h1>
+  <form class="task-form" id="taskForm">
+   <input type="text" id="taskInput" placeholder="Digite sua tarefa..." required>
+   <input type="date" id="taskDate">
+   <button type="submit">Adicionar</button>
+  </form>
+  <div class="filters">
+   <select id="filterStatus">
+    <option value="all">Todas</option>
+    <option value="completed">Concluídas</option>
+    <option value="pending">Pendentes</option>
+   </select>
+   <select id="sortTasks">
+    <option value="date">Ordenar por Data</option>
+    <option value="name">Ordenar por Nome</option>
+   </select>
   </div>
-
-  <!-- Modal Edição -->
+  <ul id="taskList"></ul>
+ </div>
   <div class="modal" id="editModal">
-    <div class="modal-content">
-      <h2>Editar Tarefa</h2>
-      <input type="text" id="editInput">
-      <div class="modal-buttons">
-        <button class="confirm-btn" id="saveEdit">Salvar</button>
-        <button class="cancel-btn" onclick="closeModal('editModal')">Cancelar</button>
-      </div>
-    </div>
-  </div>
+  <div class="modal-content"><h2>Editar Tarefa</h2><input type="text" id="editInput"><div class="modal-buttons"><button class="confirm-btn" id="saveEdit">Salvar</button><button class="cancel-btn" onclick="closeModal('editModal')">Cancelar</button></div></div>
+ </div>
+ <div class="modal" id="deleteModal">
+  <div class="modal-content"><h2>Excluir Tarefa</h2><p>Deseja realmente excluir esta tarefa?</p><div class="modal-buttons"><button class="confirm-btn" id="confirmDelete">Sim</button><button class="cancel-btn" onclick="closeModal('deleteModal')">Não</button></div></div>
+ </div>
 
-  <!-- Modal Exclusão -->
-  <div class="modal" id="deleteModal">
-    <div class="modal-content">
-      <h2>Excluir Tarefa</h2>
-      <p>Deseja realmente excluir esta tarefa?</p>
-      <div class="modal-buttons">
-        <button class="confirm-btn" id="confirmDelete">Sim</button>
-        <button class="cancel-btn" onclick="closeModal('deleteModal')">Não</button>
-      </div>
-    </div>
-  </div>
+ <script>
+  const taskForm = document.getElementById("taskForm");
+  const taskInput = document.getElementById("taskInput");
+  const taskDate = document.getElementById("taskDate");
+  const taskList = document.getElementById("taskList");
+  const filterStatus = document.getElementById("filterStatus");
+  const sortTasks = document.getElementById("sortTasks");
+  let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+  let editingTaskId = null;
+  let deletingTaskId = null;
 
-  <script>
-    // --- Variáveis ---
-    const taskForm = document.getElementById("taskForm");
-    const taskInput = document.getElementById("taskInput");
-    const taskDate = document.getElementById("taskDate");
-    const taskList = document.getElementById("taskList");
-    const filterStatus = document.getElementById("filterStatus");
-    const sortTasks = document.getElementById("sortTasks");
-    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    let editingTaskId = null;
-    let deletingTaskId = null;
+  function saveTasks() { localStorage.setItem("tasks", JSON.stringify(tasks)); }
 
-    function saveTasks() { localStorage.setItem("tasks", JSON.stringify(tasks)); }
+  function renderTasks() {
+   taskList.innerHTML = "";
+   let filteredTasks = [...tasks];
 
-    function renderTasks() {
-      taskList.innerHTML = "";
-      let filteredTasks = [...tasks];
+   if (filterStatus.value === "completed") filteredTasks = filteredTasks.filter(t => t.completed);
+   else if (filterStatus.value === "pending") filteredTasks = filteredTasks.filter(t => !t.completed);
 
-      if (filterStatus.value === "completed") filteredTasks = filteredTasks.filter(t => t.completed);
-      else if (filterStatus.value === "pending") filteredTasks = filteredTasks.filter(t => !t.completed);
+   if (sortTasks.value === "name") filteredTasks.sort((a,b) => a.text.localeCompare(b.text));
+   else filteredTasks.sort((a,b) => new Date(a.date || Infinity) - new Date(b.date || Infinity));
 
-      if (sortTasks.value === "name") filteredTasks.sort((a,b) => a.text.localeCompare(b.text));
-      else filteredTasks.sort((a,b) => new Date(a.date || Infinity) - new Date(b.date || Infinity));
+   filteredTasks.forEach(task => {
+    const li = document.createElement("li");
+    if(task.completed) li.classList.add("completed");
 
-      filteredTasks.forEach(task => {
-        const li = document.createElement("li");
-        if(task.completed) li.classList.add("completed");
+    const taskInfo = document.createElement("div");
+    taskInfo.className = "task-info";
+    taskInfo.textContent = task.text + (task.date ? ` (até ${task.date})` : "");
+        
+        // ---- ALTERAÇÃO JAVASCRIPT: Lógica do botão de concluir ----
+    const actions = document.createElement("div");
+    actions.className = "task-actions";
 
-        const taskInfo = document.createElement("div");
-        taskInfo.className = "task-info";
-        taskInfo.textContent = task.text + (task.date ? ` (até ${task.date})` : "");
+        // 1. Cria o botão de Concluir/Desfazer
+        const completeBtn = document.createElement("button");
+        completeBtn.className = "action-btn";
+        if (task.completed) {
+            completeBtn.textContent = "Desfazer";
+            completeBtn.classList.add("undo-btn"); // Estilo diferente para desfazer
+        } else {
+            completeBtn.textContent = "Concluir";
+            completeBtn.classList.add("complete-btn");
+        }
+        completeBtn.onclick = () => toggleTask(task.id);
+        
+        // 2. Cria os outros botões (sem alteração)
+    const editBtn = document.createElement("button");
+    editBtn.textContent = "✏";
+    editBtn.className = "action-btn edit-btn";
+    editBtn.onclick = () => openEditModal(task.id);
 
-        const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.checked = task.completed;
-        checkbox.addEventListener("change", () => toggleTask(task.id));
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "🗑";
+    deleteBtn.className = "action-btn delete-btn";
+    deleteBtn.onclick = () => openDeleteModal(task.id);
+        
+        // 3. Adiciona os elementos na ordem correta
+        li.appendChild(taskInfo); // Adiciona a info da tarefa
+        actions.appendChild(completeBtn); // Adiciona o novo botão
+    actions.appendChild(editBtn);
+    actions.appendChild(deleteBtn);
+    li.appendChild(actions); // Adiciona o container de ações
 
-        const actions = document.createElement("div");
-        actions.className = "task-actions";
+    taskList.appendChild(li);
+   });
+  }
+    // ---- FIM DA ALTERAÇÃO ----
 
-        const editBtn = document.createElement("button");
-        editBtn.textContent = "Editar";
-        editBtn.className = "action-btn edit-btn";
-        editBtn.onclick = () => openEditModal(task.id);
+  taskForm.addEventListener("submit", e => {
+   e.preventDefault();
+   const text = taskInput.value.trim();
+   const date = taskDate.value;
+   if(!text) return;
+   tasks.push({id:Date.now(),text,date,completed:false});
+   saveTasks(); renderTasks(); taskForm.reset();
+  });
 
-        const deleteBtn = document.createElement("button");
-        deleteBtn.textContent = "Excluir";
-        deleteBtn.className = "action-btn delete-btn";
-        deleteBtn.onclick = () => openDeleteModal(task.id);
+  function toggleTask(id) {
+   tasks = tasks.map(t => t.id===id ? {...t,completed:!t.completed} : t);
+ saveTasks(); renderTasks();
+}
 
-        li.appendChild(checkbox);
-        li.appendChild(taskInfo);
-        actions.appendChild(editBtn);
-        actions.appendChild(deleteBtn);
-        li.appendChild(actions);
+  function openEditModal(id){
+   editingTaskId = id;
+   const task = tasks.find(t=>t.id===id);
+   document.getElementById("editInput").value = task.text;
+   document.getElementById("editModal").style.display = "flex";
+  }
 
-        taskList.appendChild(li);
-      });
-    }
+  function openDeleteModal(id){
+   deletingTaskId = id;
+   document.getElementById("deleteModal").style.display = "flex";
+  }
 
-    taskForm.addEventListener("submit", e => {
-      e.preventDefault();
-      const text = taskInput.value.trim();
-      const date = taskDate.value;
-      if(!text) return;
-      tasks.push({id:Date.now(),text,date,completed:false});
-      saveTasks(); renderTasks(); taskForm.reset();
-    });
+  function closeModal(id){ document.getElementById(id).style.display="none"; }
 
-    function toggleTask(id) {
-      tasks = tasks.map(t => t.id===id ? {...t,completed:!t.completed} : t);
-      saveTasks(); renderTasks();
-    }
+  document.getElementById("saveEdit").onclick = ()=>{
+   const newText = document.getElementById("editInput").value.trim();
+   if(newText){
+    tasks = tasks.map(t=>t.id===editingTaskId ? {...t,text:newText}:t);
+    saveTasks(); renderTasks();
+   }
+   closeModal("editModal");
+  };
 
-    // --- Modais ---
-    function openEditModal(id){
-      editingTaskId = id;
-      const task = tasks.find(t=>t.id===id);
-      document.getElementById("editInput").value = task.text;
-      document.getElementById("editModal").style.display = "flex";
-    }
+  document.getElementById("confirmDelete").onclick = ()=>{
+   tasks = tasks.filter(t=>t.id!==deletingTaskId);
+   saveTasks(); renderTasks();
+   closeModal("deleteModal");
+  };
 
-    function openDeleteModal(id){
-      deletingTaskId = id;
-      document.getElementById("deleteModal").style.display = "flex";
-    }
+  filterStatus.addEventListener("change", renderTasks);
+  sortTasks.addEventListener("change", renderTasks);
 
-    function closeModal(id){ document.getElementById(id).style.display="none"; }
+  renderTasks();
 
-    document.getElementById("saveEdit").onclick = ()=>{
-      const newText = document.getElementById("editInput").value.trim();
-      if(newText){
-        tasks = tasks.map(t=>t.id===editingTaskId ? {...t,text:newText}:t);
-        saveTasks(); renderTasks();
-      }
-      closeModal("editModal");
-    };
-
-    document.getElementById("confirmDelete").onclick = ()=>{
-      tasks = tasks.filter(t=>t.id!==deletingTaskId);
-      saveTasks(); renderTasks();
-      closeModal("deleteModal");
-    };
-
-    filterStatus.addEventListener("change", renderTasks);
-    sortTasks.addEventListener("change", renderTasks);
-
-    renderTasks();
-
-    // --- Service Worker ---
-    if("serviceWorker" in navigator){
-      navigator.serviceWorker.register("service-worker.js")
-        .then(()=>console.log("Service Worker registrado!"))
-        .catch(err=>console.log("Erro SW:",err));
-    }
-  </script>
+  if("serviceWorker" in navigator){
+   navigator.serviceWorker.register("service-worker.js")
+    .then(()=>console.log("Service Worker registrado!"))
+    .catch(err=>console.log("Erro SW:",err));
+  }
+ </script>
 </body>
 </html>
